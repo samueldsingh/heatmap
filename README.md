@@ -36,3 +36,9 @@ The color displayed is dependent on the heatmap-density value of each pixel (ran
 The value of this property is an expression that uses heatmap-density as the input. For inspiration on color choices for your heatmap, take a look at Color Brewer.
 - heatmap-radius: Sets the radius for each point in pixels. The bigger the radius, the smoother the heatmap and the less amount of detail.
 - heatmap-opacity: Controls the global opacity of the heatmap layer.
+
+## Creating the map using Mapbox GL JS
+Now that you understand the purpose of heatmaps and the paint properties you will be working with,
+it's time to set up your map. For our example, we will be using the Mapbox Dark [template style](https://docs.mapbox.com/studio-manual/reference/styles/#mapbox-template-styles). You can find the [Style URLs](https://docs.mapbox.com/help/glossary/style-url/) for each of the template styles in [Mapbox API documentation](https://docs.mapbox.com/api/maps/styles/).
+
+In your text editor, create a new index.html file, then copy and paste the below code into it. Make sure to use an [access token](https://docs.mapbox.com/help/glossary/access-token/) that is associated with your account. Once you add this code and save your index.html file, you can preview the file in your browser to make sure you see the map.
