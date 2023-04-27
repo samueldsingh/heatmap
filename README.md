@@ -106,7 +106,7 @@ For heatmap-weight, specify a range that reflects your data (the dbh property ra
 
 Since heatmap-intensity is a multiplier on top of ```heatmap-weight```, ```heatmap-intensity``` can be increased as the map zooms in to preserve a similar appearance throughout the zoom range. The images below show the impact of ```heatmap-intensity``` on your map's appearance. The image on the left shows ```heatmap-intensity``` that increases with zoom level and the one on the right shows ```heatmap-intensity``` that uses the default of 1.
 
-
+![ht](https://user-images.githubusercontent.com/62851341/234885108-08cb25c3-8fe1-4551-8cd2-2a95251b30c1.png)
 
 For heatmap-color, add an interpolate expression that defines a linear relationship between heatmap-density and heatmap-color using a set of input-output pairs. If you are interested in learning more about Mapbox GL JS Expressions, read the Get Started with Mapbox GL JS expressions guide and the Mapbox GL JS documentation.
 
