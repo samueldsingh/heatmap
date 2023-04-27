@@ -42,3 +42,45 @@ Now that you understand the purpose of heatmaps and the paint properties you wil
 it's time to set up your map. For our example, we will be using the Mapbox Dark [template style](https://docs.mapbox.com/studio-manual/reference/styles/#mapbox-template-styles). You can find the [Style URLs](https://docs.mapbox.com/help/glossary/style-url/) for each of the template styles in [Mapbox API documentation](https://docs.mapbox.com/api/maps/styles/).
 
 In your text editor, create a new index.html file, then copy and paste the below code into it. Make sure to use an [access token](https://docs.mapbox.com/help/glossary/access-token/) that is associated with your account. Once you add this code and save your index.html file, you can preview the file in your browser to make sure you see the map.
+
+```
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8' />
+    <title>Make a heatmap with Mapbox GL JS</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+</head>
+<body>
+  <div id='map'></div>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic2FtdWVsZHM3IiwiYSI6ImNsZ3Z6aG5pbjA4cnAzZHBsejQ1cXFha20ifQ.gPsqiwIKL3RKWXK8DY9xlg';
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/dark-v11',
+      center: [-79.999732, 40.4374],
+      zoom: 11
+    });
+
+   // we will add more code here in the next steps
+
+  </script>
+</body>
+</html>
+```
+
