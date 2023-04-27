@@ -77,6 +77,7 @@ In your text editor, create a new index.html file, then copy and paste the below
       zoom: 11
     });
 
+
    // we will add more code here in the next steps
 
   </script>
@@ -84,3 +85,208 @@ In your text editor, create a new index.html file, then copy and paste the below
 </html>
 ```
 
+## Add your data
+You will first need to add the GeoJSON you downloaded at the beginning of this guide as the source for your heatmap. You can do this by using the addSource method. This source will be used to create not only a heatmap layer but also a circle layer. The heatmap layer will fade out while the circle layer fades in to show individual data points at higher zoom levels. Add the following code after the map you initialized in the previous step.
+
+```
+map.on('load', () => {
+  map.addSource('trees', {
+    type: 'geojson',
+    data: './trees.geojson'
+  });
+  // add heatmap layer here
+  // add circle layer here
+});
+```
+
+## Add the heatmap layer
+Next, use the addLayer method to create a new layer for your heatmap. Once you've created this layer, you will make use of the heatmap properties discussed earlier to fine-tune your heatmap's appearance.
+
+For heatmap-weight, specify a range that reflects your data (the dbh property ranges from 1-62 in the GeoJSON source). Because larger trees have a high dbh, give them more weight in your heatmap by creating a stop function that increases heatmap-weight as dbh increases.
+
+Since heatmap-intensity is a multiplier on top of heatmap-weight, heatmap-intensity can be increased as the map zooms in to preserve a similar appearance throughout the zoom range. The images below show the impact of heatmap-intensity on your map's appearance. The image on the left shows heatmap-intensity that increases with zoom level and the one on the right shows heatmap-intensity that uses the default of 1.
+
+[image](https://docs.mapbox.com/help/img/gl-js/heatmap-intensity-one.png)
+
+For heatmap-color, add an interpolate expression that defines a linear relationship between heatmap-density and heatmap-color using a set of input-output pairs. If you are interested in learning more about Mapbox GL JS Expressions, read the Get Started with Mapbox GL JS expressions guide and the Mapbox GL JS documentation.
+
+Finish configuring your heatmap layer by setting values for ```heatmap-radius``` and ```heatmap-opacity```. ```heatmap-radius``` should increase with zoom level to preserve the smoothness of the heatmap as the points become more dispersed. ```heatmap-opacity``` should be decreased from 1 to 0 between zoom levels 14 and 15 to provide a smooth transition as your circle layer fades in to replace the heatmap layer. Add the following code within the 'load' event handler after the ```addSource``` method.
+
+```
+map.addLayer(
+  {
+    id: 'trees-heat',
+    type: 'heatmap',
+    source: 'trees',
+    maxzoom: 15,
+    paint: {
+      // increase weight as diameter breast height increases
+      'heatmap-weight': {
+        property: 'dbh',
+        type: 'exponential',
+        stops: [
+          [1, 0],
+          [62, 1]
+        ]
+      },
+      // increase intensity as zoom level increases
+      'heatmap-intensity': {
+        stops: [
+          [11, 1],
+          [15, 3]
+        ]
+      },
+      // assign color values be applied to points depending on their density
+      'heatmap-color': [
+        'interpolate',
+        ['linear'],
+        ['heatmap-density'],
+        0,
+        'rgba(236,222,239,0)',
+        0.2,
+        'rgb(208,209,230)',
+        0.4,
+        'rgb(166,189,219)',
+        0.6,
+        'rgb(103,169,207)',
+        0.8,
+        'rgb(28,144,153)'
+      ],
+      // increase radius as zoom increases
+      'heatmap-radius': {
+        stops: [
+          [11, 15],
+          [15, 20]
+        ]
+      },
+      // decrease opacity to transition into the circle layer
+      'heatmap-opacity': {
+        default: 1,
+        stops: [
+          [14, 1],
+          [15, 0]
+        ]
+      }
+    }
+  },
+  'waterway-label'
+);
+```
+
+## Add the circle layer
+Next, add a circle layer. As you zoom in to your heatmap, the points stop overlapping visually and it is no longer necessary to show their distribution and density. At this point, you can show the points themselves and allow viewers to explore the data interactively.
+
+Remember how you used a stop function in the previous step to fade the heatmap layer out between zoom level 14 and 15? You'll need to replace that layer by fading your circle layer in, using a zoom function to increase its circle-opacity between zooms 14 and 15. For circle-radius, use a zoom-and-property function to increase the radius by zoom level and property (as demonstrated below). Add the following code after the heatmap layer you added in the last step.
+
+```
+map.addLayer(
+  {
+    id: 'trees-point',
+    type: 'circle',
+    source: 'trees',
+    minzoom: 14,
+    paint: {
+      // increase the radius of the circle as the zoom level and dbh value increases
+      'circle-radius': {
+        property: 'dbh',
+        type: 'exponential',
+        stops: [
+          [{ zoom: 15, value: 1 }, 5],
+          [{ zoom: 15, value: 62 }, 10],
+          [{ zoom: 22, value: 1 }, 20],
+          [{ zoom: 22, value: 62 }, 50]
+        ]
+      },
+      'circle-color': {
+        property: 'dbh',
+        type: 'exponential',
+        stops: [
+          [0, 'rgba(236,222,239,0)'],
+          [10, 'rgb(236,222,239)'],
+          [20, 'rgb(208,209,230)'],
+          [30, 'rgb(166,189,219)'],
+          [40, 'rgb(103,169,207)'],
+          [50, 'rgb(28,144,153)'],
+          [60, 'rgb(1,108,89)']
+        ]
+      },
+      'circle-stroke-color': 'white',
+      'circle-stroke-width': 1,
+      'circle-opacity': {
+        stops: [
+          [14, 0],
+          [15, 1]
+        ]
+      }
+    }
+  },
+  'waterway-label'
+);
+```
+
+## Add the circle layer
+Next, add a circle layer. As you zoom in to your heatmap, the points stop overlapping visually and it is no longer necessary to show their distribution and density. At this point, you can show the points themselves and allow viewers to explore the data interactively.
+
+Remember how you used a stop function in the previous step to fade the heatmap layer out between zoom level 14 and 15? You'll need to replace that layer by fading your circle layer in, using a zoom function to increase its ```circle-opacity``` between zooms 14 and 15. For ```circle-radius```, use a zoom-and-property function to increase the radius by zoom level and property (as demonstrated below). Add the following code after the heatmap layer you added in the last step.
+
+```
+map.addLayer(
+  {
+    id: 'trees-point',
+    type: 'circle',
+    source: 'trees',
+    minzoom: 14,
+    paint: {
+      // increase the radius of the circle as the zoom level and dbh value increases
+      'circle-radius': {
+        property: 'dbh',
+        type: 'exponential',
+        stops: [
+          [{ zoom: 15, value: 1 }, 5],
+          [{ zoom: 15, value: 62 }, 10],
+          [{ zoom: 22, value: 1 }, 20],
+          [{ zoom: 22, value: 62 }, 50]
+        ]
+      },
+      'circle-color': {
+        property: 'dbh',
+        type: 'exponential',
+        stops: [
+          [0, 'rgba(236,222,239,0)'],
+          [10, 'rgb(236,222,239)'],
+          [20, 'rgb(208,209,230)'],
+          [30, 'rgb(166,189,219)'],
+          [40, 'rgb(103,169,207)'],
+          [50, 'rgb(28,144,153)'],
+          [60, 'rgb(1,108,89)']
+        ]
+      },
+      'circle-stroke-color': 'white',
+      'circle-stroke-width': 1,
+      'circle-opacity': {
+        stops: [
+          [14, 0],
+          [15, 1]
+        ]
+      }
+    }
+  },
+  'waterway-label'
+);
+```
+
+## Add some interactivity
+The following code adds interactivity to your map by allowing your viewers to click on your circle layer to view a popup containing the tree's DBH value. Include the code below after your circle layer.
+
+```
+map.on('click', 'trees-point', (event) => {
+  new mapboxgl.Popup()
+    .setLngLat(event.features[0].geometry.coordinates)
+    .setHTML(`<strong>DBH:</strong> ${event.features[0].properties.dbh}`)
+    .addTo(map);
+});
+```
+
+The final product is:
+
+https://user-images.githubusercontent.com/62851341/234880694-8cfdc6e8-293d-4c0e-802f-5c36b4311f52.mp4
