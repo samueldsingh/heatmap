@@ -104,9 +104,9 @@ Next, use the addLayer method to create a new layer for your heatmap. Once you'v
 
 For heatmap-weight, specify a range that reflects your data (the dbh property ranges from 1-62 in the GeoJSON source). Because larger trees have a high dbh, give them more weight in your heatmap by creating a stop function that increases heatmap-weight as dbh increases.
 
-Since heatmap-intensity is a multiplier on top of heatmap-weight, heatmap-intensity can be increased as the map zooms in to preserve a similar appearance throughout the zoom range. The images below show the impact of heatmap-intensity on your map's appearance. The image on the left shows heatmap-intensity that increases with zoom level and the one on the right shows heatmap-intensity that uses the default of 1.
+Since heatmap-intensity is a multiplier on top of ```heatmap-weight```, ```heatmap-intensity``` can be increased as the map zooms in to preserve a similar appearance throughout the zoom range. The images below show the impact of ```heatmap-intensity``` on your map's appearance. The image on the left shows ```heatmap-intensity``` that increases with zoom level and the one on the right shows ```heatmap-intensity``` that uses the default of 1.
 
-[image](https://docs.mapbox.com/help/img/gl-js/heatmap-intensity-one.png)
+
 
 For heatmap-color, add an interpolate expression that defines a linear relationship between heatmap-density and heatmap-color using a set of input-output pairs. If you are interested in learning more about Mapbox GL JS Expressions, read the Get Started with Mapbox GL JS expressions guide and the Mapbox GL JS documentation.
 
